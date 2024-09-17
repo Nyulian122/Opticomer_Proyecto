@@ -1,8 +1,8 @@
-let barcodeData = [];  // Almacenar los códigos de barras
+let barcodeData = [];  // Almacena los códigos de barras y sus SKUs
 
-// Función para añadir un código de barras a la lista
-function addBarcode(code) {
-    barcodeData.push(code);
+// Función para añadir un código de barras, SKUs y cantidad a la lista
+function addBarcode(code, sku1, sku2, quantity) {
+    barcodeData.push({ code, sku1, sku2, quantity });
     displayBarcodes();  // Muestra los códigos almacenados
 }
 
@@ -11,11 +11,14 @@ function displayBarcodes() {
     const dataList = document.getElementById("dataList");
     dataList.innerHTML = '';  // Limpia la lista antes de mostrar
 
-    barcodeData.forEach((code, index) => {
+    barcodeData.forEach((item, index) => {
         const barcodeDiv = document.createElement('div');
         barcodeDiv.innerHTML = `
-            Código ${index + 1}: ${code}
-            <button onclick="generateBarcodeImage('${code}', ${index})">Generar JPG</button>
+            Código ${index + 1}: ${item.code}<br>
+            SKU 1: ${item.sku1}<br>
+            SKU 2: ${item.sku2}<br>
+            Cantidad: ${item.quantity}<br>
+            <button onclick="generateBarcodeImage('${item.code}', ${index})">Generar JPG</button>
         `;
         dataList.appendChild(barcodeDiv);
     });
@@ -25,7 +28,14 @@ function displayBarcodes() {
 document.getElementById('barcodeInput').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         const barcode = e.target.value;
-        addBarcode(barcode);
+        const sku1 = prompt("Ingrese SKU 1 para este código:");
+        const sku2 = prompt("Ingrese SKU 2 para este código:");
+        const quantity = parseInt(prompt("Ingrese la cantidad para este código:"), 10);
+        if (!isNaN(quantity) && quantity > 0) {
+            addBarcode(barcode, sku1, sku2, quantity);
+        } else {
+            alert("La cantidad debe ser un número positivo.");
+        }
         e.target.value = '';  // Limpia el campo de entrada
     }
 });
@@ -51,8 +61,14 @@ function generateBarcodeImage(code, index) {
 
 // Función para descargar todos los códigos de barras en un archivo Excel
 function downloadExcel() {
-    const worksheetData = barcodeData.map((code, index) => {
-        return { Número: index + 1, Código: code };
+    const worksheetData = barcodeData.map((item, index) => {
+        return { 
+            Producto: `Producto ${index + 1}`, 
+            Código: item.code, 
+            SKU1: item.sku1, 
+            SKU2: item.sku2, 
+            Cantidad: item.quantity 
+        };
     });
 
     const worksheet = XLSX.utils.json_to_sheet(worksheetData);
