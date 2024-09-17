@@ -1,8 +1,10 @@
 let barcodeData = [];  // Almacena los códigos de barras y sus SKUs
 
-// Función para añadir un código de barras, SKUs y cantidad a la lista
-function addBarcode(code, sku1, sku2, quantity) {
-    barcodeData.push({ code, sku1, sku2, quantity });
+// Función para añadir un código de barras, SKUs, y nombre a la lista
+function addBarcode(code, sku1, sku2, responsibleName) {
+    const printDate = new Date().toISOString().split('T')[0];  // Fecha actual en formato YYYY-MM-DD
+    const orderNumber = barcodeData.length + 1;  // Número de orden secuencial
+    barcodeData.push({ code, sku1, sku2, orderNumber, printDate, responsibleName });
     displayBarcodes();  // Muestra los códigos almacenados
 }
 
@@ -17,7 +19,9 @@ function displayBarcodes() {
             Código ${index + 1}: ${item.code}<br>
             SKU 1: ${item.sku1}<br>
             SKU 2: ${item.sku2}<br>
-            Cantidad: ${item.quantity}<br>
+            Número de Orden: ${item.orderNumber}<br>
+            Fecha de Impresión: ${item.printDate}<br>
+            Responsable: ${item.responsibleName}<br>
             <button onclick="generateBarcodeImage('${item.code}', ${index})">Generar JPG</button>
         `;
         dataList.appendChild(barcodeDiv);
@@ -30,12 +34,9 @@ document.getElementById('barcodeInput').addEventListener('keypress', function (e
         const barcode = e.target.value;
         const sku1 = prompt("Ingrese SKU 1 para este código:");
         const sku2 = prompt("Ingrese SKU 2 para este código:");
-        const quantity = parseInt(prompt("Ingrese la cantidad para este código:"), 10);
-        if (!isNaN(quantity) && quantity > 0) {
-            addBarcode(barcode, sku1, sku2, quantity);
-        } else {
-            alert("La cantidad debe ser un número positivo.");
-        }
+        const responsibleName = prompt("Ingrese el nombre del responsable:");
+
+        addBarcode(barcode, sku1, sku2, responsibleName);
         e.target.value = '';  // Limpia el campo de entrada
     }
 });
@@ -59,23 +60,51 @@ function generateBarcodeImage(code, index) {
     link.click();
 }
 
-// Función para descargar todos los códigos de barras en un archivo Excel
+// Función para descargar todos los códigos de barras en un archivo Excel con estilo
 function downloadExcel() {
     const worksheetData = barcodeData.map((item, index) => {
         return { 
-            Producto: `Producto ${index + 1}`, 
+            Cantidad: `Producto ${index + 1}`, 
             Código: item.code, 
             SKU1: item.sku1, 
             SKU2: item.sku2, 
-            Cantidad: item.quantity 
+            Número_de_Orden: item.orderNumber,
+            Fecha_de_Impresión: item.printDate,
+            Responsable: item.responsibleName
         };
     });
 
     const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+
+    // Aplicar estilos básicos
+    const headerStyle = { font: { bold: true }, fill: { fgColor: { rgb: "FFFF00" } }, border: { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } }, alignment: { horizontal: 'center' } };
+
+    // Estilo de las celdas de encabezado
+    const headers = worksheet['!ref'].split(':');
+    const headerRange = XLSX.utils.decode_range(worksheet['!ref']);
+    for (let C = headerRange.s.c; C <= headerRange.e.c; ++C) {
+        const cellAddress = XLSX.utils.encode_cell({ r: headerRange.s.r, c: C });
+        if (!worksheet[cellAddress]) worksheet[cellAddress] = {};
+        worksheet[cellAddress].s = headerStyle;
+    }
+
+    // Aplicar bordes a todas las celdas
+    worksheet['!cols'] = [];
+    worksheet['!rows'] = [];
+    for (let R = headerRange.s.r; R <= headerRange.e.r; ++R) {
+        worksheet['!rows'].push({ hpt: 20 });
+        for (let C = headerRange.s.c; C <= headerRange.e.c; ++C) {
+            const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+            if (!worksheet[cellAddress]) worksheet[cellAddress] = {};
+            worksheet[cellAddress].s = worksheet[cellAddress].s || { border: { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } } };
+        }
+    }
+
+    // Crear el libro de trabajo
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Códigos de Barras");
 
-    // Genera el archivo Excel
+    // Generar el archivo Excel
     XLSX.writeFile(workbook, "codigos_barras.xlsx");
 }
 
