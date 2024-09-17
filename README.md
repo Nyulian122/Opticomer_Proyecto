@@ -28,6 +28,7 @@ Este proyecto es una aplicación web para escanear, almacenar y generar códigos
 
 ## Enlace Github
    ```bash
+   https://nyulian122.github.io/Opticomer_Proyecto/
    
       
    
