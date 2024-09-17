@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escáner de código de barras</title>
+    <link rel="stylesheet" href="./css/config.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            Sistema de Escaneo de Códigos
+        </header>
+
+        <!-- Campo de entrada para el código de barras -->
+        <input type="text" id="barcodeInput" placeholder="Escanea el código de barras aquí" autofocus />
+
+        <!-- Lista de códigos escaneados -->
+        <div id="dataList"></div>
+
+        <!-- Botón para descargar el archivo Excel con todos los códigos -->
+        <button id="downloadExcel">Descargar todos los códigos como Excel</button>
+
+        <!-- Footer -->
+        <footer>
+            © 2024 - Sistema de Escaneo de Códigos de Barras
+        </footer>
+    </div>
+
+    <script src="./js/main.js"></script>
+</body>
+</html>

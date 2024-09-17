@@ -1,0 +1,77 @@
+/* Estilo para el body */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Contenedor principal con Grid */
+.container {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr auto auto;
+    gap: 20px;
+    width: 400px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo del header */
+header {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #4CAF50;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #4CAF50;
+}
+
+/* Estilo del campo de entrada */
+#barcodeInput {
+    padding: 10px;
+    font-size: 18px;
+    border: 2px solid #4CAF50;
+    border-radius: 5px;
+    outline: none;
+    transition: 0.3s ease;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo del footer */
+footer {
+    text-align: center;
+    font-size: 14px;
+    color: #777;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+}
+
+/* Estilo de los botones */
+button {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#dataList div {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
