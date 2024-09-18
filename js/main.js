@@ -64,8 +64,7 @@ function generateBarcodeImage(code, index) {
 function downloadExcel() {
     const worksheetData = barcodeData.map((item, index) => {
         return { 
-            Cantidad: `Producto ${index + 1}`, 
-            Código: item.code, 
+            Cantidad: ` ${index + 1}`,
             SKU1: item.sku1, 
             SKU2: item.sku2, 
             Número_de_Orden: item.orderNumber,
