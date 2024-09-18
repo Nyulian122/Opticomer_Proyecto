@@ -27,5 +27,6 @@ Este proyecto es una aplicación web para escanear, almacenar y generar códigos
    git clone https://github.com/tu-usuario/proyecto-escaner-codigos
 
 ## Enlace Github
+
    ```bash
    https://nyulian122.github.io/Opticomer_Proyecto/
