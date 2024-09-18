@@ -1,9 +1,8 @@
 let barcodeData = [];  // Almacena los códigos de barras y sus SKUs
 
 // Función para añadir un código de barras, SKUs, y nombre a la lista
-function addBarcode(code, sku1, sku2, responsibleName) {
+function addBarcode(code, sku1, sku2, orderNumber, responsibleName) {
     const printDate = new Date().toISOString().split('T')[0];  // Fecha actual en formato YYYY-MM-DD
-    const orderNumber = barcodeData.length + 1;  // Número de orden secuencial
     barcodeData.push({ code, sku1, sku2, orderNumber, printDate, responsibleName });
     displayBarcodes();  // Muestra los códigos almacenados
 }
@@ -35,8 +34,9 @@ document.getElementById('barcodeInput').addEventListener('keypress', function (e
         const sku1 = prompt("Ingrese SKU 1 para este código:");
         const sku2 = prompt("Ingrese SKU 2 para este código:");
         const responsibleName = prompt("Ingrese el nombre del responsable:");
+        const orderNumber = prompt("Ingrese el número de orden:");  // Número de orden modificable
 
-        addBarcode(barcode, sku1, sku2, responsibleName);
+        addBarcode(barcode, sku1, sku2, orderNumber, responsibleName);
         e.target.value = '';  // Limpia el campo de entrada
     }
 });
@@ -64,12 +64,13 @@ function generateBarcodeImage(code, index) {
 function downloadExcel() {
     const worksheetData = barcodeData.map((item, index) => {
         return { 
-            Cantidad: ` ${index + 1}`,
+            Producto: `Producto ${index + 1}`, 
             SKU1: item.sku1, 
             SKU2: item.sku2, 
-            Número_de_Orden: item.orderNumber,
+            Número_de_Orden: item.orderNumber,  // Ahora incluye el número de orden
             Fecha_de_Impresión: item.printDate,
-            Responsable: item.responsibleName
+            Responsable: item.responsibleName,
+            " ": ""  // Aquí se deja en blanco el campo que antes era "Cantidad"
         };
     });
 
@@ -78,20 +79,9 @@ function downloadExcel() {
     // Aplicar estilos básicos
     const headerStyle = { font: { bold: true }, fill: { fgColor: { rgb: "FFFF00" } }, border: { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } }, alignment: { horizontal: 'center' } };
 
-    // Estilo de las celdas de encabezado
-    const headers = worksheet['!ref'].split(':');
-    const headerRange = XLSX.utils.decode_range(worksheet['!ref']);
-    for (let C = headerRange.s.c; C <= headerRange.e.c; ++C) {
-        const cellAddress = XLSX.utils.encode_cell({ r: headerRange.s.r, c: C });
-        if (!worksheet[cellAddress]) worksheet[cellAddress] = {};
-        worksheet[cellAddress].s = headerStyle;
-    }
-
     // Aplicar bordes a todas las celdas
-    worksheet['!cols'] = [];
-    worksheet['!rows'] = [];
+    const headerRange = XLSX.utils.decode_range(worksheet['!ref']);
     for (let R = headerRange.s.r; R <= headerRange.e.r; ++R) {
-        worksheet['!rows'].push({ hpt: 20 });
         for (let C = headerRange.s.c; C <= headerRange.e.c; ++C) {
             const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
             if (!worksheet[cellAddress]) worksheet[cellAddress] = {};
